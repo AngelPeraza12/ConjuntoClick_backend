@@ -15,7 +15,9 @@ app.listen(PORT, () => {
 
 // Importar Rutas
 const productosRoutes = require('./routes/productos');
-const usuariosRoutes = require('./routes/usuarios')
+const usuariosRoutes = require('./routes/usuarios');
+const pedidosRoutes = require('./routes/pedidos');
+const detallesRoutes = require('./routes/detalles');
 
 app.get('/', (req, res) => {
     res.send('¡El servidor de ConjuntoClick está vivo! 🚀');
@@ -23,8 +25,10 @@ app.get('/', (req, res) => {
 // Usar Rutas (todas empezarán con /api por buena practica de bd)
 
 app.use('/api/productos', productosRoutes);
-
 app.use('/api/usuarios', usuariosRoutes);
+app.use('/api/pedidos', pedidosRoutes);
+app.use('/api/detalles', detallesRoutes);
+
 
 
 
