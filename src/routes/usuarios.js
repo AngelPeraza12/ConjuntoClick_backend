@@ -1,8 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const productosController = require('../controllers/productos');
+const usuariosController = require('../controllers/usuarios');
 
 // Definimos la ruta GET para el inicio (/)
-router.get('/', productosController.obtenerProductos);
+router.get('/', usuariosController.obtenerUsuarios);
 
 module.exports = router;
