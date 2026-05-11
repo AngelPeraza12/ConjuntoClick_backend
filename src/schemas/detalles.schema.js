@@ -6,8 +6,7 @@ const detalleSchema = {
         pedido_id: { type: 'integer' },
         producto_id: { type: 'integer' },
         cantidad: { type: 'integer', example: 2 },
-        precio_unitario: { type: 'number', example: 25.00 },
-        subtotal: { type: 'number', description: 'cantidad * precio_unitario' }
+        precio_unitario: { type: 'number', example: 25.00 }        
     }
 };
 

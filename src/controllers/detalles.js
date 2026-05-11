@@ -3,7 +3,7 @@ const db = require('../db');
 const detallesController = {
     getAll: async (req, res) => {
         try {
-            const [rows] = await db.query('SELECT * FROM detalles_pedidos');
+            const [rows] = await db.query('SELECT * FROM detalle_pedidos');
             res.json(rows);
         } catch (error) {
             res.status(500).json({ error: error.message });
@@ -12,7 +12,7 @@ const detallesController = {
 
     getOne: async (req, res) => {
         try {
-            const [rows] = await db.query('SELECT * FROM detalles_pedidos WHERE id = ?', [req.params.id]);
+            const [rows] = await db.query('SELECT * FROM detalle_pedidos WHERE id = ?', [req.params.id]);
             if (rows.length === 0) return res.status(404).json({ mensaje: "Detalle no encontrado" });
             res.json(rows[0]);
         } catch (error) {
@@ -23,11 +23,9 @@ const detallesController = {
     create: async (req, res) => {
         const { pedido_id, producto_id, cantidad, precio_unitario } = req.body;
         try {
-            // Calculamos el subtotal automáticamente
-            const subtotal = cantidad * precio_unitario;
             const [result] = await db.query(
-                'INSERT INTO detalles_pedidos (pedido_id, producto_id, cantidad, precio_unitario, subtotal) VALUES (?, ?, ?, ?, ?)',
-                [pedido_id, producto_id, cantidad, precio_unitario, subtotal]
+                'INSERT INTO detalle_pedidos (pedido_id, producto_id, cantidad, precio_unitario) VALUES (?, ?, ?, ?)',
+                [pedido_id, producto_id, cantidad, precio_unitario]
             );
             res.status(201).json({ id: result.insertId, mensaje: "Producto agregado al detalle del pedido" });
         } catch (error) {
@@ -40,8 +38,8 @@ const detallesController = {
         try {
             const subtotal = cantidad * precio_unitario;
             const [result] = await db.query(
-                'UPDATE detalles_pedidos SET cantidad = ?, precio_unitario = ?, subtotal = ? WHERE id = ?',
-                [cantidad, precio_unitario, subtotal, req.params.id]
+                'UPDATE detalle_pedidos SET cantidad = ?, precio_unitario = ?, subtotal = ? WHERE id = ?',
+                [cantidad, precio_unitario, req.params.id]
             );
             if (result.affectedRows === 0) return res.status(404).json({ mensaje: "Detalle no encontrado" });
             res.json({ mensaje: "Detalle actualizado" });
@@ -52,7 +50,7 @@ const detallesController = {
 
     delete: async (req, res) => {
         try {
-            const [result] = await db.query('DELETE FROM detalles_pedidos WHERE id = ?', [req.params.id]);
+            const [result] = await db.query('DELETE FROM detalle_pedidos WHERE id = ?', [req.params.id]);
             if (result.affectedRows === 0) return res.status(404).json({ mensaje: "Detalle no encontrado" });
             res.json({ mensaje: "Producto quitado del detalle" });
         } catch (error) {
