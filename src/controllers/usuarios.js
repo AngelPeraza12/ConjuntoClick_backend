@@ -5,7 +5,7 @@ const usuariosController = {
     getAll: async (req, res) => {
         try {
             // No seleccionamos la contraseña por seguridad
-            const [rows] = await db.query('SELECT id, nombre, email, rol, fecha_registro FROM usuarios');
+            const [rows] = await db.query('SELECT id, nombre, email, rol, torre, apartamento, fecha_registro FROM usuarios');
             res.json(rows);
         } catch (error) {
             res.status(500).json({ error: error.message });
@@ -25,11 +25,11 @@ const usuariosController = {
 
     // 3. Crear un nuevo usuario (Registro)
     create: async (req, res) => {
-        const { nombre, email, password, rol } = req.body;
+        const { nombre, email, password, rol, torre, apartamento} = req.body;
         try {
             const [result] = await db.query(
-                'INSERT INTO usuarios (nombre, email, password, rol) VALUES (?, ?, ?, ?)',
-                [nombre, email, password, rol || 'cliente']
+                'INSERT INTO usuarios (nombre, email, password, rol, torre, apartamento) VALUES (?, ?, ?, ?, ?, ?)',
+                [nombre, email, password, rol, torre, apartamento]
             );
             res.status(201).json({ id: result.insertId, mensaje: "Usuario creado con éxito" });
         } catch (error) {
@@ -43,11 +43,11 @@ const usuariosController = {
 
     // 4. Actualizar datos de usuario
     update: async (req, res) => {
-        const { nombre, email, rol } = req.body;
+        const { nombre, email, password, rol, torre, apartamento} = req.body;
         try {
             const [result] = await db.query(
-                'UPDATE usuarios SET nombre=?, email=?, rol=? WHERE id=?',
-                [nombre, email, rol, req.params.id]
+                'UPDATE usuarios SET nombre=?, email=?, password=?, rol=?, torre=?, apartamento=?, WHERE id=?'|
+                [nombre, email, password, rol, torre, apartamento, req.params.id]
             );
             if (result.affectedRows === 0) return res.status(404).json({ mensaje: "Usuario no encontrado" });
             res.json({ mensaje: "Usuario actualizado con éxito" });
