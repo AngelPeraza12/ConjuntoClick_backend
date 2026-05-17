@@ -37,9 +37,10 @@ const detallesController = {
         const { cantidad, precio_unitario } = req.body;
         try {
             const subtotal = cantidad * precio_unitario;
+            // Se agregó 'subtotal' al arreglo de parámetros en la posición correcta
             const [result] = await db.query(
                 'UPDATE detalle_pedidos SET cantidad = ?, precio_unitario = ?, subtotal = ? WHERE id = ?',
-                [cantidad, precio_unitario, req.params.id]
+                [cantidad, precio_unitario, subtotal, req.params.id]
             );
             if (result.affectedRows === 0) return res.status(404).json({ mensaje: "Detalle no encontrado" });
             res.json({ mensaje: "Detalle actualizado" });
