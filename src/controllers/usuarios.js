@@ -46,7 +46,7 @@ const usuariosController = {
         const { nombre, email, password, rol, torre, apartamento} = req.body;
         try {
             const [result] = await db.query(
-                'UPDATE usuarios SET nombre=?, email=?, password=?, rol=?, torre=?, apartamento=?, WHERE id=?'|
+                'UPDATE usuarios SET nombre=?, email=?, password=?, rol=?, torre=?, apartamento=? WHERE id=?',
                 [nombre, email, password, rol, torre, apartamento, req.params.id]
             );
             if (result.affectedRows === 0) return res.status(404).json({ mensaje: "Usuario no encontrado" });
