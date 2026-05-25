@@ -83,5 +83,6 @@ router.post('/', usuariosController.create);
 router.get('/:id', usuariosController.getOne);
 router.put('/:id', usuariosController.update);
 router.delete('/:id', usuariosController.delete);
+router.post('/login', usuariosController.login);
 
 module.exports = router;
