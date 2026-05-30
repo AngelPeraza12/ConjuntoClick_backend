@@ -33,6 +33,7 @@ const productosController = require('../controllers/productos');
  */
 router.get('/', productosController.getAll);
 router.post('/', productosController.create);
+router.post('/descontar-stock', productosController.descontarStock);
 
 /**
  * @swagger

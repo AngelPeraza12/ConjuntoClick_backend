@@ -15,7 +15,7 @@ const usuariosController = {
     // 2. Obtener un solo usuario por ID
     getOne: async (req, res) => {
         try {
-            const [rows] = await db.query('SELECT id, nombre, email, rol, fecha_registro FROM usuarios WHERE id = ?', [req.params.id]);
+            const [rows] = await db.query('SELECT id, nombre, email, rol, fecha_registro FROM usuarios WHERE id_usuario = ?', [req.params.id]);
             if (rows.length === 0) return res.status(404).json({ mensaje: "Usuario no encontrado" });
             res.json(rows[0]);
         } catch (error) {
@@ -46,7 +46,7 @@ const usuariosController = {
         const { nombre, email, password, rol, torre, apartamento} = req.body;
         try {
             const [result] = await db.query(
-                'UPDATE usuarios SET nombre=?, email=?, password=?, rol=?, torre=?, apartamento=? WHERE id=?',
+                'UPDATE usuarios SET nombre=?, email=?, password=?, rol=?, torre=?, apartamento=? WHERE id_usuario=?',
                 [nombre, email, password, rol, torre, apartamento, req.params.id]
             );
             if (result.affectedRows === 0) return res.status(404).json({ mensaje: "Usuario no encontrado" });
@@ -59,51 +59,48 @@ const usuariosController = {
     // 5. Eliminar un usuario
     delete: async (req, res) => {
         try {
-            const [result] = await db.query('DELETE FROM usuarios WHERE id = ?', [req.params.id]);
+            const [result] = await db.query('DELETE FROM usuarios WHERE id_usuario = ?', [req.params.id]);
             if (result.affectedRows === 0) return res.status(404).json({ mensaje: "Usuario no encontrado" });
             res.json({ mensaje: "Usuario eliminado correctamente" });
         } catch (error) {
             res.status(500).json({ error: error.message });
         }
     }, 
-    // 6. Validar Usuario por Correo y Clave (Login)
     login: async (req, res) => {
-        const { email, password } = req.body;
-        try {
-            // Buscamos estrictamente por el campo email que está en tu esquema
-            const [rows] = await db.query(
-                'SELECT nombre, email, password, rol, torre, apartamento FROM usuarios WHERE email = ?',
-                [email]
-            );
+    const { email, password } = req.body;
+    try {
+        // 🔥 AGREGAMOS 'id' al SELECT
+        const [rows] = await db.query(
+            'SELECT id_usuario, nombre, email, password, rol, torre, apartamento FROM usuarios WHERE email = ?',
+            [email]
+        );
 
-            // Validación de existencia de correo
-            if (rows.length === 0) {
-                return res.status(404).json({ mensaje: "El correo electrónico no está registrado" });
-            }
-
-            const usuario = rows[0];
-
-            // Validación de contraseña en texto plano
-            if (usuario.password !== password) {
-                return res.status(401).json({ mensaje: "La contraseña es incorrecta" });
-            }
-
-            // Si todo está ok, devolvemos el objeto limpio con la data del esquema
-            res.json({
-                mensaje: "¡Inicio de sesión exitoso!",
-                usuario: {
-                    nombre: usuario.nombre,
-                    email: usuario.email,
-                    rol: usuario.rol,
-                    torre: usuario.torre,
-                    apartamento: usuario.apartamento
-                }
-            });
-
-        } catch (error) {
-            res.status(500).json({ error: error.message });
+        if (rows.length === 0) {
+            return res.status(404).json({ mensaje: "El correo electrónico no está registrado" });
         }
+
+        const usuario = rows[0];
+
+        if (usuario.password !== password) {
+            return res.status(401).json({ mensaje: "La contraseña es incorrecta" });
+        }
+
+        res.json({
+            mensaje: "¡Inicio de sesión exitoso!",
+            usuario: {
+                id: usuario.id_usuario, // 🔥 OBLIGATORIO: Enviamos el id numérico al frontend
+                nombre: usuario.nombre,
+                email: usuario.email,
+                rol: usuario.rol,
+                torre: usuario.torre,
+                apartamento: usuario.apartamento
+            }
+        });
+
+    } catch (error) {
+        res.status(500).json({ error: error.message });
     }
+}
 };
 
 module.exports = usuariosController;

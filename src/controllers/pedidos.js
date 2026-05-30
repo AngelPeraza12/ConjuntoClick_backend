@@ -12,7 +12,7 @@ const pedidosController = {
 
     getOne: async (req, res) => {
         try {
-            const [rows] = await db.query('SELECT * FROM pedidos WHERE id = ?', [req.params.id]);
+            const [rows] = await db.query('SELECT * FROM pedidos WHERE id_pedido = ?', [req.params.id]);
             if (rows.length === 0) return res.status(404).json({ mensaje: "Pedido no encontrado" });
             res.json(rows[0]);
         } catch (error) {
@@ -21,11 +21,11 @@ const pedidosController = {
     },
 
     create: async (req, res) => {
-        const { usuario_id, total, estado } = req.body;
+        const { id_usuario, total, estado } = req.body;
         try {
             const [result] = await db.query(
-                'INSERT INTO pedidos (usuario_id, total, estado) VALUES (?, ?, ?)',
-                [usuario_id, total, estado || 'pendiente']
+                'INSERT INTO pedidos (id_usuario, total, estado) VALUES (?, ?, ?)',
+                [id_usuario, total, estado || 'pendiente']
             );
             res.status(201).json({ id: result.insertId, mensaje: "Pedido registrado con éxito" });
         } catch (error) {
@@ -37,7 +37,7 @@ const pedidosController = {
         const { estado, total } = req.body;
         try {
             const [result] = await db.query(
-                'UPDATE pedidos SET estado = ?, total = ? WHERE id = ?',
+                'UPDATE pedidos SET estado = ?, total = ? WHERE id_pedido = ?',
                 [estado, total, req.params.id]
             );
             if (result.affectedRows === 0) return res.status(404).json({ mensaje: "Pedido no encontrado" });
@@ -49,7 +49,7 @@ const pedidosController = {
 
     delete: async (req, res) => {
         try {
-            const [result] = await db.query('DELETE FROM pedidos WHERE id = ?', [req.params.id]);
+            const [result] = await db.query('DELETE FROM pedidos WHERE id_pedido = ?', [req.params.id]);
             if (result.affectedRows === 0) return res.status(404).json({ mensaje: "Pedido no encontrado" });
             res.json({ mensaje: "Pedido eliminado correctamente" });
         } catch (error) {

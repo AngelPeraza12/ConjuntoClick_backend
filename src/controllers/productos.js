@@ -11,10 +11,10 @@ const productosController = {
         }
     },
 
-    // 2. Obtener un solo producto por ID (READ ONE)
+    // 2. Obtener un solo producto por ID - Ajustado a la columna física
     getOne: async (req, res) => {
         try {
-            const [rows] = await db.query('SELECT * FROM productos WHERE id = ?', [req.params.id]);
+            const [rows] = await db.query('SELECT * FROM productos WHERE id_producto = ?', [req.params.id]);
             if (rows.length === 0) return res.status(404).json({ mensaje: "Producto no encontrado" });
             res.json(rows[0]);
         } catch (error) {
@@ -36,12 +36,12 @@ const productosController = {
         }
     },
 
-    // 4. Actualizar un producto (UPDATE)
+    // 4. Actualizar un producto (UPDATE) - 🔥 CORREGIDO: id_producto en la base de datos
     update: async (req, res) => {
         const { nombre, descripcion, precio, stock, imagen_url, categoria } = req.body;
         try {
             const [result] = await db.query(
-                'UPDATE productos SET nombre=?, descripcion=?, precio=?, stock=?, imagen_url=?, categoria=? WHERE id=?',
+                'UPDATE productos SET nombre=?, descripcion=?, precio=?, stock=?, imagen_url=?, categoria=? WHERE id_producto=?',
                 [nombre, descripcion, precio, stock, imagen_url, categoria, req.params.id]
             );
             if (result.affectedRows === 0) return res.status(404).json({ mensaje: "Producto no encontrado" });
@@ -51,12 +51,31 @@ const productosController = {
         }
     },
 
-    // 5. Eliminar un producto (DELETE)
+    // 5. Eliminar un producto (DELETE) - 🔥 CORREGIDO: id_producto en la base de datos
     delete: async (req, res) => {
         try {
-            const [result] = await db.query('DELETE FROM productos WHERE id = ?', [req.params.id]);
+            const [result] = await db.query('DELETE FROM productos WHERE id_producto = ?', [req.params.id]);
             if (result.affectedRows === 0) return res.status(404).json({ mensaje: "Producto no encontrado" });
             res.json({ mensaje: "Producto eliminado correctamente" });
+        } catch (error) {
+            res.status(500).json({ error: error.message });
+        }
+    },
+
+    // 6. Descontar stock al vender - 🔥 CORREGIDO: id_producto en la base de datos
+    descontarStock: async (req, res) => {
+        const { id, cantidadComprada } = req.body;
+        try {
+            const [result] = await db.query(
+                'UPDATE productos SET stock = stock - ? WHERE id_producto = ? AND stock >= ?',
+                [cantidadComprada, id, cantidadComprada]
+            );
+
+            if (result.affectedRows === 0) {
+                return res.status(400).json({ mensaje: "No hay suficiente stock o el producto no existe" });
+            }
+
+            res.json({ mensaje: "Stock actualizado correctamente" });
         } catch (error) {
             res.status(500).json({ error: error.message });
         }
