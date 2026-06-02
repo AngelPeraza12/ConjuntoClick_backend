@@ -4,8 +4,8 @@ const usuariosController = {
     // 1. Obtener todos los usuarios
     getAll: async (req, res) => {
         try {
-            // No seleccionamos la contraseña por seguridad
-            const [rows] = await db.query('SELECT id, nombre, email, rol, torre, apartamento, fecha_registro FROM usuarios');
+            // 🔥 CORREGIDO: 'id_usuario' en vez de 'id'
+            const [rows] = await db.query('SELECT id_usuario, nombre, email, rol, torre, apartamento, fecha_registro FROM usuarios');
             res.json(rows);
         } catch (error) {
             res.status(500).json({ error: error.message });
@@ -15,7 +15,8 @@ const usuariosController = {
     // 2. Obtener un solo usuario por ID
     getOne: async (req, res) => {
         try {
-            const [rows] = await db.query('SELECT id, nombre, email, rol, fecha_registro FROM usuarios WHERE id_usuario = ?', [req.params.id]);
+            // 🔥 CORREGIDO: 'id_usuario' en vez de 'id'
+            const [rows] = await db.query('SELECT id_usuario, nombre, email, rol, fecha_registro FROM usuarios WHERE id_usuario = ?', [req.params.id]);
             if (rows.length === 0) return res.status(404).json({ mensaje: "Usuario no encontrado" });
             res.json(rows[0]);
         } catch (error) {

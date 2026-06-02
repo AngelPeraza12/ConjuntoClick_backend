@@ -1,8 +1,8 @@
 const pedidoSchema = {
     type: 'object',
-    required: ['usuario_id', 'total'], // 'fecha' NO va aquí para que sea opcional al crear
+    required: ['id_usuario', 'total'], // 'fecha' NO va aquí para que sea opcional al crear
     properties: {        
-        usuario_id: { type: 'integer', description: 'ID del usuario que compra' },
+        id_usuario: { type: 'integer', description: 'ID del usuario que compra' },
         fecha: { 
             type: 'string', 
             format: 'date-time', 

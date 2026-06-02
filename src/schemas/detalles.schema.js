@@ -1,9 +1,9 @@
 const detalleSchema = {
     type: 'object',
-    required: ['pedido_id', 'producto_id', 'cantidad', 'precio_unitario'],
+    required: ['id_pedido', 'id_producto', 'cantidad', 'precio_unitario'],
     properties: {
-        pedido_id: { type: 'integer' },
-        producto_id: { type: 'integer' },
+        id_pedido: { type: 'integer' },
+        id_producto: { type: 'integer' },
         cantidad: { type: 'integer', example: 2 },
         precio_unitario: { type: 'number', example: 25.00 }        
     }

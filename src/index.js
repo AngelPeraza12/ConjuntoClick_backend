@@ -10,6 +10,8 @@ const productosRoutes = require('./routes/productos');
 const usuariosRoutes = require('./routes/usuarios');
 const pedidosRoutes = require('./routes/pedidos');
 const detallesRoutes = require('./routes/detalles');
+const pedidosTenderoRoutes = require('./routes/pedidosTendero')
+const notificacionesRoutes = require('./routes/notificaciones')
 
 const app = express();
 
@@ -48,6 +50,8 @@ app.use('/api/productos', productosRoutes);
 app.use('/api/usuarios', usuariosRoutes);
 app.use('/api/pedidos', pedidosRoutes);
 app.use('/api/detalles', detallesRoutes);
+app.use('/api/pedidos-tendero', pedidosTenderoRoutes);
+app.use('/api/notificaciones', notificacionesRoutes);
 
 // 6. Encendido del Servidor
 const PORT = process.env.PORT || 3000;

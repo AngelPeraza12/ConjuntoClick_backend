@@ -80,7 +80,7 @@ const detallesController = require('../controllers/detalles');
 router.get('/', detallesController.getAll);
 router.post('/', detallesController.create);
 router.get('/:id', detallesController.getOne);
-router.put('/:id', detallesController.update);
+//router.put('/:id', detallesController.update); parcialmente en src/routes/pedidos.js
 router.delete('/:id', detallesController.delete);
 
 module.exports = router;
