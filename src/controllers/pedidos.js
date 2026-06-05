@@ -33,7 +33,6 @@ const pedidosController = {
         }
     },
 
-    // 🔄 REEMPLAZA TU FUNCIÓN UPDATE POR ESTA VERSÍON CORREGIDA:
     update: async (req, res) => {
         const { estado, total } = req.body;
         const { id } = req.params;
